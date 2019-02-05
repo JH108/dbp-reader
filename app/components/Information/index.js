@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { FormattedMessage } from 'react-intl';
 import AnimateHeight from 'react-animate-height';
+import Link from 'next/link';
 import CopyrightSection from '../CopyrightSection';
 import { selectCopyrights } from './selectors';
 import ImageComponent from '../ImageComponent';
@@ -21,6 +22,7 @@ class Information extends React.PureComponent {
 		opened: false,
 		height: 0,
 	};
+
 	// eslint-disable-line react/prefer-stateless-function
 	setRef = (node) => {
 		this.ref = node;
@@ -60,6 +62,7 @@ class Information extends React.PureComponent {
 				</a>
 			),
 		]);
+
 	getTextCopyright = (organizations, testament) =>
 		organizations.map((org) => [
 			<h3 key={`${org.name}_text_name_${testament}`}>
@@ -90,6 +93,7 @@ class Information extends React.PureComponent {
 				</a>
 			),
 		]);
+
 	toggleCopyright = () => {
 		const height = 515;
 
@@ -104,7 +108,11 @@ class Information extends React.PureComponent {
 
 		return (
 			<section ref={this.setRef} className="information">
-				<button onClick={this.toggleCopyright} className="information-toggle">
+				<button
+					onClick={this.toggleCopyright}
+					className="information-toggle"
+					type={'button'}
+				>
 					<FormattedMessage {...messages.material} />
 					&nbsp;|&nbsp;
 					<span className={'learn-more'}>
@@ -141,6 +149,12 @@ class Information extends React.PureComponent {
 					</a>
 					&nbsp;
 					<FormattedMessage {...messages.circleR} />
+					&nbsp;
+					<Link href={'/terms'}>
+						<a id={'terms-of-service'}>
+							<FormattedMessage {...messages.terms} />
+						</a>
+					</Link>
 				</div>
 			</section>
 		);

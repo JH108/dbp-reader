@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import SvgWrapper from '../../components/SvgWrapper';
+import SvgWrapper from '../SvgWrapper';
 import getPreviousChapterUrl from '../../utils/getPreviousChapterUrl';
 import getNextChapterUrl from '../../utils/getNextChapterUrl';
 
 const SvgButton = ({ id, clickHandler, videoObject }) => (
-	<div className={'control-button-container'}>
+	<div onClick={clickHandler} className={'control-button-container'}>
 		<span className={'play-video-title'}>
 			{videoObject.reference || 'Loading'}
 		</span>
-		<SvgWrapper
-			onClick={clickHandler}
-			className={'play-video'}
-			fill={'#fff'}
-			svgid={id}
-		/>
+		<SvgWrapper className={'play-video'} fill={'#fff'} svgid={id} />
 	</div>
 );
 
@@ -26,14 +21,6 @@ SvgButton.propTypes = {
 };
 
 class VideoOverlay extends React.PureComponent {
-	handleNextClick = () => {
-		this.props.closePlayer();
-		Router.replace(this.nextChapterAs);
-	};
-	handlePreviousClick = () => {
-		this.props.closePlayer();
-		Router.replace(this.previousChapterAs);
-	};
 	get nextChapterAs() {
 		const { books, bookId, chapter, textId, text } = this.props;
 
@@ -47,6 +34,7 @@ class VideoOverlay extends React.PureComponent {
 			vid: true,
 		});
 	}
+
 	get nextChapterHref() {
 		const { books, bookId, chapter, textId, text } = this.props;
 
@@ -60,6 +48,7 @@ class VideoOverlay extends React.PureComponent {
 			vid: true,
 		});
 	}
+
 	get previousChapterAs() {
 		const { books, bookId, chapter, textId, text } = this.props;
 
@@ -73,6 +62,7 @@ class VideoOverlay extends React.PureComponent {
 			vid: true,
 		});
 	}
+
 	get previousChapterHref() {
 		const { books, bookId, chapter, textId, text } = this.props;
 
@@ -86,6 +76,17 @@ class VideoOverlay extends React.PureComponent {
 			vid: true,
 		});
 	}
+
+	handleNextClick = () => {
+		this.props.closePlayer();
+		Router.replace(this.nextChapterAs);
+	};
+
+	handlePreviousClick = () => {
+		this.props.closePlayer();
+		Router.replace(this.previousChapterAs);
+	};
+
 	render() {
 		const {
 			paused,

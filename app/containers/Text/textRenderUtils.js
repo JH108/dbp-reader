@@ -1,32 +1,8 @@
-export const getClassNameForMain = (
-	formattedSource,
-	userSettings,
-	textDirection,
-	menuIsOpen,
-) => {
-	const readersMode = userSettings.getIn([
-		'toggleOptions',
-		'readersMode',
-		'active',
-	]);
-	const oneVersePerLine = userSettings.getIn([
-		'toggleOptions',
-		'oneVersePerLine',
-		'active',
-	]);
-	const justifiedClass = userSettings.getIn([
-		'toggleOptions',
-		'justifiedText',
-		'active',
-	])
-		? 'justify'
-		: '';
+export const getClassNameForMain = (textDirection, menuIsOpen) => {
 	const isRtl = textDirection === 'rtl' ? 'rtl' : '';
 	const menuOpenClass = menuIsOpen ? ' menu-is-open' : '';
 
-	return formattedSource.main && !readersMode && !oneVersePerLine
-		? `${isRtl}${menuOpenClass}`
-		: `chapter ${justifiedClass} ${isRtl}${menuOpenClass}`;
+	return `${isRtl}${menuOpenClass}`;
 };
 
 export const getClassNameForTextContainer = ({
@@ -100,12 +76,13 @@ export const getInlineStyleForTextContainer = (
 		maxHeight: `calc(100vh - ${headerHeight}px)`,
 	};
 };
-
+// If book has testament of OT and testament_order of 1 it is the first book
 export const isStartOfBible = (books, activeBookId, activeChapter) => {
 	if (!books || !books.length) {
 		return false;
 	}
-	const book = books[0];
+	// Get book that is the last in bible
+	const book = books.slice().sort((a, b) => a.book_order - b.book_order)[0];
 
 	if (!book) {
 		return false;
@@ -120,7 +97,8 @@ export const isEndOfBible = (books, activeBookId, activeChapter) => {
 	if (!books || !books.length) {
 		return false;
 	}
-	const book = books[books.length - 1];
+	// Get book that is the last in bible
+	const book = books.slice().sort((a, b) => b.book_order - a.book_order)[0];
 
 	if (!book) {
 		return false;
@@ -132,33 +110,3 @@ export const isEndOfBible = (books, activeBookId, activeChapter) => {
 
 	return bookId === activeBookId && chapter === activeChapter;
 };
-
-// Because the system captures the verse numbers this needs to be used
-// Can accept plainText boolean as third arg if needed
-export const calcDistance = (last, first /* plainText */) => {
-	// If the last verse is equal to the first verse then I don't need a diff
-	if (last === first) return 0;
-	let stringDiff = '';
-
-	for (let i = first + 1; i <= last; i += 1) {
-		// Adds the length of each verse number
-		stringDiff += i.toFixed(0);
-		// Adds characters for text to account for spaces in verse numbers
-		stringDiff += '11';
-	}
-	// Gets the total length of the distance neededk
-
-	return stringDiff.length;
-};
-
-export const getReference = (
-	verseStart,
-	verseEnd,
-	activeBookName,
-	activeChapter,
-) =>
-	`${activeBookName} ${activeChapter}:${
-		verseStart === verseEnd || !verseEnd
-			? verseStart
-			: `${verseStart}-${verseEnd}`
-	}`;

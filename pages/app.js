@@ -33,7 +33,9 @@ import getFirstChapterReference from '../app/utils/getFirstChapterReference';
 import isUserAgentInternetExplorer from '../app/utils/isUserAgentInternetExplorer';
 
 class AppContainer extends React.Component {
-	static displayName = 'Main app'; // eslint-disable-line no-undef
+	static displayName = 'Main app';
+
+	// eslint-disable-line no-undef
 	componentDidMount() {
 		// If the page was served from the server then I need to cache the data for this route
 		if (this.props.isFromServer) {
@@ -123,14 +125,28 @@ class AppContainer extends React.Component {
 	componentWillUnmount() {
 		Router.router.events.off('routeChangeStart', this.handleRouteChange);
 	}
+
 	/* eslint-disable no-undef */
-	handleRouteChange = (/* url */) => {
+	handleRouteChange = (url) => {
 		/* eslint-enable no-undef */
 		// Pause audio
 		// Start loading spinner for text
 		// Close any open menus
 		// Remove current audio source - (may fix item 1)
 		// TODO: Probably need to get the new highlights here or at least start the process for getting them
+		if (typeof dataLayer !== 'undefined') {
+			try {
+				dataLayer.push({
+					event: 'pageview',
+					page: {
+						path: url,
+						title: url,
+					},
+				});
+			} catch (err) {
+				console.error('Google tag manager did not capture pageview: ', err); // eslint-disable-line no-console
+			}
+		}
 		this.props.dispatch(setChapterTextLoadingState({ state: true }));
 	};
 
@@ -219,6 +235,7 @@ AppContainer.getInitialProps = async (context) => {
 		nickname: userName,
 	};
 	// Using let here because the cookie data can come from the server or the client
+	let audioParam = req && req.query.audio_type;
 	let userId = reqUserId || '';
 	let hasVideo = false;
 	let isFromServer = true;
@@ -418,16 +435,32 @@ AppContainer.getInitialProps = async (context) => {
 	const bookMetaResponse = await Promise.all(bookMetaPromises);
 
 	const bookMetaData = removeDuplicates(
-		bookMetaResponse.reduce(
-			(reducedObjects, filesetObject) => [
-				...reducedObjects,
-				...Object.values(filesetObject)[0],
-			],
-			[],
-		),
+		bookMetaResponse
+			.slice()
+			.reduce(
+				(reducedObjects, filesetObject) => [
+					...reducedObjects,
+					...Object.values(filesetObject)[0],
+				],
+				[],
+			),
 		'book_id',
-	);
+	).sort((a, b) => a.book_order - b.book_order);
 
+	if (audioParam) {
+		// If there are any audio filesets with the given type
+		if (filesets.some((set) => set.type === audioParam)) {
+			audioType = audioParam;
+			// Otherwise check for drama first
+		} else if (filesets.some((set) => set.type === 'audio_drama')) {
+			audioType = 'audio_drama';
+			audioParam = '';
+			// Lastly check for plain audio
+		} else if (filesets.some((set) => set.type === 'audio')) {
+			audioType = 'audio';
+			audioParam = '';
+		}
+	}
 	// Redirect to the new url if conditions are met
 	if (bookMetaData && bookMetaData.length) {
 		const foundBook = bookMetaData.find(
@@ -442,6 +475,7 @@ AppContainer.getInitialProps = async (context) => {
 			hasVideo,
 			bookMetaResponse,
 			bookMetaData,
+			audioParam,
 		);
 
 		// If the book wasn't found and chapter wasn't found
@@ -478,14 +512,18 @@ AppContainer.getInitialProps = async (context) => {
 					serverRes.writeHead(302, {
 						Location: `${req.protocol}://${req.get(
 							'host',
-						)}/bible/${bibleId}/${foundBookId}/${foundChapterId}`,
+						)}/bible/${bibleId}/${foundBookId}/${foundChapterId}${
+							audioParam ? `?audio_type=${audioParam}` : ''
+						}`,
 					});
 					serverRes.end();
 				} else {
 					Router.push(
 						`${
 							window.location.origin
-						}/bible/${bibleId}/${foundBookId}/${foundChapterId}`,
+						}/bible/${bibleId}/${foundBookId}/${foundChapterId}${
+							audioParam ? `?audio_type=${audioParam}` : ''
+						}`,
 					);
 				}
 			}

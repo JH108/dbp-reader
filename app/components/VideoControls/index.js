@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SvgWrapper from '../../components/SvgWrapper';
-import VolumeSlider from '../../components/VolumeSlider';
+import SvgWrapper from '../SvgWrapper';
+import VolumeSlider from '../VolumeSlider';
 import Colors from '../../utils/javascriptColors';
 
 class VideoControls extends React.PureComponent {
@@ -27,6 +27,7 @@ class VideoControls extends React.PureComponent {
 	openVolumeSlider = () => {
 		this.setState({ volumeSliderState: true });
 	};
+
 	get containerClassNames() {
 		const { paused, elipsisOpen } = this.props;
 		let classNames = 'controls';
@@ -97,21 +98,25 @@ class VideoControls extends React.PureComponent {
 						/>
 						{this.getVolumeSvg(volume)}
 					</div>
-					<SvgWrapper onClick={pauseVideo} fill={'#fff'} svgid={'pause'} />
+					<div onClick={pauseVideo}>
+						<SvgWrapper fill={'#fff'} svgid={'pause'} />
+					</div>
 				</div>
 				<div className={'right-controls'}>
-					<SvgWrapper
-						fill={'#fff'}
-						onClick={toggleElipsis}
-						className={'video-elipsis'}
-						svgid={'elipsis'}
-					/>
-					<SvgWrapper
-						fill={'#fff'}
-						className={'video-fullscreen'}
-						onClick={toggleFullScreen}
-						svgid={'fullscreen'}
-					/>
+					<div onClick={toggleElipsis}>
+						<SvgWrapper
+							fill={'#fff'}
+							className={'video-elipsis'}
+							svgid={'elipsis'}
+						/>
+					</div>
+					<div onClick={toggleFullScreen}>
+						<SvgWrapper
+							fill={'#fff'}
+							className={'video-fullscreen'}
+							svgid={'fullscreen'}
+						/>
+					</div>
 				</div>
 			</div>
 		);

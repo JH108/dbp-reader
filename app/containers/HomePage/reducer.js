@@ -16,7 +16,6 @@ import {
 import {
 	ACTIVE_TEXT_ID,
 	LOAD_AUDIO,
-	LOAD_BOOKS,
 	LOAD_HIGHLIGHTS,
 	SET_USER_AGENT,
 	SET_ACTIVE_CHAPTER,
@@ -66,11 +65,10 @@ const initialState = fromJS({
 			text: {},
 		},
 	},
+	activeChapter: 1,
 	hasAudio: false,
 	hasVideo: false,
 	videoPlayerOpen: true,
-	activeChapter: 1,
-	chapterTextLoadingState: false,
 	userAuthenticated: false,
 	isChapterSelectionActive: false,
 	isProfileActive: false,
@@ -79,17 +77,18 @@ const initialState = fromJS({
 	isNotesModalActive: false,
 	isVersionSelectionActive: false,
 	isInformationModalActive: false,
-	loadingBooks: false,
 	isFromServer: true,
 	invalidBibleId: false,
 	hasTextInDatabase: true,
 	firstLoad: true,
 	audioPlayerState: true,
+	chapterTextLoadingState: false,
 	loadingNewChapterText: false,
-	audioType: '',
 	loadingCopyright: true,
 	loadingAudio: false,
+	loadingBooks: false,
 	userId: '',
+	audioType: '',
 	match: {
 		params: {
 			bibleId: 'engesv',
@@ -163,19 +162,6 @@ function homePageReducer(state = initialState, action) {
 			return state
 				.set('addBookmarkFailure', false)
 				.set('addBookmarkSuccess', false);
-		case LOAD_BOOKS:
-			// Setting the active book name based on whether a name was introduced via
-			// the bookId in the url, this was the best I could come up with
-			return state
-				.set('loadingBooks', false)
-				.set('hasTextInDatabase', action.hasTextInDatabase)
-				.set('filesetTypes', fromJS(action.filesetTypes))
-				.set('copywrite', fromJS(action.copywrite))
-				.set(
-					'activeBookName',
-					action.activeBookName || state.get('activeBookName'),
-				)
-				.set('books', fromJS(action.books));
 		case LOAD_AUDIO:
 			return state.set('audioObjects', fromJS(action.audioObjects));
 		case SET_ACTIVE_NOTE:

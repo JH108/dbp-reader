@@ -3,6 +3,8 @@
  * Settings
  *
  * NOTE: The <Slider /> component requires inline styles to be passed into it
+ * TODO: Use https://github.com/markusenglund/react-switch?utm_campaign=React%2BNewsletter&utm_medium=email&utm_source=React_Newsletter_147
+ * for the toggle switches.
  */
 
 import React from 'react';
@@ -86,8 +88,11 @@ export class Settings extends React.PureComponent {
 	updateTheme = ({ theme }) => {
 		this.props.dispatch(updateTheme({ theme }));
 	};
+
 	updateFontType = ({ font }) => this.props.dispatch(updateFontType({ font }));
+
 	updateFontSize = ({ size }) => this.props.dispatch(updateFontSize({ size }));
+
 	toggleSettingsOption = (props) => {
 		const opposite =
 			props.name === 'ONE VERSE PER LINE'
@@ -105,6 +110,7 @@ export class Settings extends React.PureComponent {
 			}),
 		);
 	};
+
 	toggle = {
 		"READER'S MODE": ['userSettings', 'toggleOptions', 'readersMode', 'active'],
 		'CROSS REFERENCE': [

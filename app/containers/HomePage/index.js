@@ -10,6 +10,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { TransitionGroup } from 'react-transition-group';
 import dynamic from 'next/dynamic';
+import isEqual from 'lodash/isEqual';
 import injectSaga from '../../utils/injectSaga';
 import injectReducer from '../../utils/injectReducer';
 import checkForVideoAsync from '../../utils/checkForVideoAsync';
@@ -26,6 +27,7 @@ import textSaga from '../TextSelection/saga';
 import profileSaga from '../Profile/saga';
 import profileReducer from '../Profile/reducer';
 import makeSelectProfile from '../Profile/selectors';
+// import getDifferenceObject from '../../utils/deepDifferenceObject';
 import { setActiveIsoCode } from '../TextSelection/actions';
 import { getBookmarksForChapter, addBookmark } from '../Notes/actions';
 import { setHasVideo } from '../VideoPlayer/actions';
@@ -49,7 +51,6 @@ import {
 	setActiveTextId,
 	setActiveChapter,
 	setActiveBookName,
-	setActiveNotesView,
 	setAudioPlayerState,
 	setChapterTextLoadingState,
 	resetBookmarkState,
@@ -72,18 +73,27 @@ import {
 	toggleWordsOfJesus,
 } from '../Settings/themes';
 
-const VideoPlayer = dynamic(import('../VideoPlayer'));
-const Profile = dynamic(import('../Profile'));
-const Settings = dynamic(import('../Settings'));
-const SearchContainer = dynamic(import('../SearchContainer'));
-const Notes = dynamic(import('../Notes'));
+const VideoPlayer = dynamic(import('../VideoPlayer'), {
+	loading: () => null,
+});
+const Profile = dynamic(import('../Profile'), {
+	loading: () => null,
+});
+const Settings = dynamic(import('../Settings'), {
+	loading: () => null,
+});
+const SearchContainer = dynamic(import('../SearchContainer'), {
+	loading: () => null,
+});
+const Notes = dynamic(import('../Notes'), {
+	loading: () => null,
+});
 
 class HomePage extends React.PureComponent {
 	state = {
 		isScrollingDown: false,
-		footerDistance: 0,
-		heightDifference: 0,
 	};
+
 	componentDidMount() {
 		const {
 			activeFilesets,
@@ -227,20 +237,45 @@ class HomePage extends React.PureComponent {
 			activeBookId,
 			activeChapter,
 			addBookmarkSuccess,
+			audioSource,
 		} = nextProps.homepage;
-		const { userSettings } = nextProps;
-		const { userSettings: prevSettings } = this.props;
+		const { userSettings, formattedSource, textData } = nextProps;
+		const {
+			userSettings: prevSettings,
+			formattedSource: prevFormattedSource,
+			textData: prevTextData,
+		} = this.props;
 		const { userId, userAuthenticated } = nextProps.profile;
 		const {
 			addBookmarkSuccess: addBookmarkSuccessProps,
 			activeTextId: activeTextIdProps,
 			activeBookId: activeBookIdProps,
 			activeChapter: activeChapterProps,
+			audioSource: prevAudioSource,
 		} = this.props.homepage;
 		const {
 			userId: userIdProps,
 			userAuthenticated: userAuthenticatedProps,
 		} = this.props.profile;
+
+		const videoFileset = nextProps.homepage.activeFilesets.filter(
+			(f) => f.type === 'video_stream',
+		)[0];
+		if (videoFileset) {
+			this.checkForVideo(
+				videoFileset ? videoFileset.id : '',
+				nextProps.homepage.activeBookId,
+				nextProps.homepage.activeChapter,
+			);
+		}
+		// If there was a change in the params then make sure loading state is set to false
+		if (
+			formattedSource.main !== prevFormattedSource.main ||
+			!isEqual(prevTextData.text, textData.text) ||
+			audioSource !== prevAudioSource
+		) {
+			this.setTextLoadingState({ state: false });
+		}
 
 		// Only apply the them if one of them changed - use the newest one always since that will be what the user clicked
 		if (typeof document !== 'undefined') {
@@ -348,8 +383,6 @@ class HomePage extends React.PureComponent {
 		this.props.dispatch(setChapterTextLoadingState(props));
 
 	setActiveTextId = (props) => this.props.dispatch(setActiveTextId(props));
-
-	setActiveNotesView = (view) => this.props.dispatch(setActiveNotesView(view));
 
 	setActiveNote = ({ note }) => this.props.dispatch(setActiveNote({ note }));
 
@@ -509,17 +542,13 @@ class HomePage extends React.PureComponent {
 			activeFilesetId,
 			audioPlayerState,
 			books,
-			highlights,
-			invalidBibleId,
 			isProfileActive,
 			isNotesModalActive,
 			isSearchModalActive,
 			isSettingsModalActive,
 			isVersionSelectionActive,
 			isChapterSelectionActive,
-			isInformationModalActive,
 			userAgent,
-			textDirection,
 			loadingAudio,
 			loadingNewChapterText,
 			chapterTextLoadingState,
@@ -529,21 +558,18 @@ class HomePage extends React.PureComponent {
 
 		const {
 			userSettings,
-			formattedSource,
 			isMenuOpen,
 			initialVolume,
 			initialPlaybackRate,
 			isIe,
 			audioType,
 		} = this.props;
-		const { userId, userAuthenticated } = this.props.profile;
 
 		const autoPlayEnabled = userSettings.get('autoPlayEnabled');
-		const { isScrollingDown, footerDistance: distance } = this.state;
-		const { userNotes, bookmarks, text: updatedText } = this.props.textData;
+		const { isScrollingDown } = this.state;
+		const { text: updatedText } = this.props.textData;
 		const token = this.props.homepage.match.params.token || '';
 		const verse = this.props.homepage.match.params.verse || '';
-		// const loadText = (loadingNewChapterText, loadingAudio, chapterTextLoadingState, (!formattedVerse && formattedSource.main));
 
 		return (
 			<>
@@ -581,43 +607,19 @@ class HomePage extends React.PureComponent {
 					)}
 					<Text
 						books={books}
-						userId={userId}
 						text={updatedText}
 						hasVideo={hasVideo}
-						distance={distance}
 						verseNumber={verse}
-						userNotes={userNotes}
-						bookmarks={bookmarks}
-						bibleId={activeTextId}
 						menuIsOpen={isMenuOpen}
-						highlights={highlights}
-						audioSource={audioSource}
 						activeTextId={activeTextId}
 						activeBookId={activeBookId}
 						loadingAudio={loadingAudio}
-						userSettings={userSettings}
 						activeChapter={activeChapter}
-						textDirection={textDirection}
-						invalidBibleId={invalidBibleId}
-						activeBookName={activeBookName}
-						notesActive={isNotesModalActive}
-						formattedSource={formattedSource}
 						videoPlayerOpen={videoPlayerOpen}
 						isScrollingDown={isScrollingDown}
 						audioPlayerState={audioPlayerState}
-						userAuthenticated={userAuthenticated}
-						informationActive={isInformationModalActive}
 						loadingNewChapterText={loadingNewChapterText}
 						chapterTextLoadingState={chapterTextLoadingState}
-						addBookmark={this.addBookmark}
-						addHighlight={this.addHighlight}
-						setActiveNote={this.setActiveNote}
-						getCopyrights={this.getCopyrights}
-						toggleNotesModal={this.toggleNotesModal}
-						deleteHighlights={this.deleteHighlights}
-						setActiveNotesView={this.setActiveNotesView}
-						setTextLoadingState={this.setTextLoadingState}
-						toggleInformationModal={this.toggleInformationModal}
 					/>
 				</div>
 				<TransitionGroup>
@@ -704,7 +706,6 @@ class HomePage extends React.PureComponent {
 					toggleProfile={this.toggleProfile}
 					toggleSearch={this.toggleSearchModal}
 					toggleNotebook={this.toggleNotesModal}
-					setActiveNotesView={this.setActiveNotesView}
 					toggleSettingsModal={this.toggleSettingsModal}
 				/>
 			</>
@@ -718,6 +719,7 @@ HomePage.propTypes = {
 	userSettings: PropTypes.object,
 	formattedSource: PropTypes.object,
 	userAuthenticated: PropTypes.bool,
+	isIe: PropTypes.bool,
 	audioType: PropTypes.string,
 	userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	textData: PropTypes.object,
