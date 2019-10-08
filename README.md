@@ -10,7 +10,7 @@ and [Faith Comes by Hearing](https://faithcomesbyhearing.com).
 - This project requires Node v10 and npm v6.
 
 - If you do not have Node follow the installation instructions here: [Node.js](https://nodejs.org/en/download/).
-- Follow the instructions on [Digital Bible Platform](www.dbp4.org) to obtain an api key for the app. _**You will need a valid key for the app to work!**_
+- Follow the instructions on [Digital Bible Platform](https://dbp4.org) to obtain an api key for the app. _**You will need a valid key for the app to work!**_
   - _**By default you will only have access to one bible resource. To gain access to more resources please contact the admins for the DBP and ask them to expand your access controls**_
 - Clone the repository:
   - `git clone https://github.com/digitalbiblesociety/dbp-reader.git`
