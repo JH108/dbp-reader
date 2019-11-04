@@ -1,59 +1,43 @@
-const fs = require("fs");
-const globSync = require("glob").sync;
-const mkdirpSync = require("mkdirp").sync;
-const last = require("lodash/last");
+const fs = require('fs');
+const glob = require('glob');
+const promisify = require('util').promisify;
+const mkdirpSync = require('mkdirp').sync;
+const last = require('lodash/last');
+const path = require('path');
 
-const MESSAGES_PATTERN = "../app/**/messages.js";
-const LANG_DIR = "../languages-test/locales/";
-const LANG_PATTERN = "../languages-test/locales/*.json";
+const readFile = promisify(fs.readFile);
+const globFile = promisify(glob);
 
-// Try to delete current json files from public/locales
-// try {
-//   fs.unlinkSync("../languages-test/locales/*.json");
-// } catch (error) {
-//   console.log(error);
-// }
+const MESSAGES_PATTERN = path.join(
+	__dirname,
+	'../app/components/AccountSettings/messages.js',
+);
+const LANG_DIR = '../languages-test/locales/';
+const LANG_PATTERN = '../languages-test/locales/*.json';
 
-// Merge translated json files (es.json, fr.json, etc) into one object
-// so that they can be merged with the Aggregated "en" object below
+const init = async () => {
+	console.log('MESSAGES_PATTERN', MESSAGES_PATTERN);
+	const filenames = await globFile('../app/**/messages.js');
+	const filenamePromises = filenames.map(async (file) => {
+		const filePath = path.join(__dirname, file);
+		const fileBuffer = await readFile(filePath);
+		const fileData = Buffer.from(fileBuffer).toString('utf8');
 
-// const mergedTranslations = globSync(LANG_PATTERN)
-//   .map(filename => {
-//     const locale = last(filename.split("/")).split(".json")[0];
-//     return { [locale]: JSON.parse(fs.readFileSync(filename, "utf8")) };
-//   })
-//   .reduce((acc, localeObj) => {
-//     return { ...acc, ...localeObj };
-//   }, {});
+		return fileData;
+	});
 
-// Aggregates the default messages that were extracted from the app's
-// React components. An error will be thrown if
-// there are messages in different components that use the same `id`. The result
-// is a flat collection of `id: message` pairs for the app's default locale.
+	const filenameData = await Promise.all(filenamePromises);
+	console.log('Files globbed', filenameData.length);
+	// Might not be the best way to get all the messages, maybe a refactor to move
+	// the message objects into JSON would be better
+	const parsedFiles = filenameData.map((data) => {
+		const regex = new RegExp(/.*export default defineMessages\((.*)\}/gim);
+		return data.match(regex);
+	});
+	console.log(parsedFiles);
+	return parsedFiles;
+};
 
-const defaultMessages = globSync(MESSAGES_PATTERN).map(filename => {
-  console.log("filename", filename);
-  return filename;
+init().catch((error) => {
+	console.log('Error gathering messages', error);
 });
-console.log(defaultMessages);
-//   .map(file => JSON.parse(file))
-//   .reduce((collection, descriptors) => {
-//     descriptors.forEach(({ id, defaultMessage }) => {
-//       if (collection.hasOwnProperty(id)) {
-//         throw new Error(`Duplicate message id: ${id}`);
-//       }
-//       collection[id] = defaultMessage;
-//     });
-
-//     return collection;
-//   }, {});
-
-// Create a new directory that we want to write the aggregate messages to
-// mkdirpSync(LANG_DIR);
-
-// Merge aggregated default messages with the translated json files and
-// write the messages to this directory
-// fs.writeFileSync(
-//   `${LANG_DIR}data.json`,
-//   JSON.stringify({ en: defaultMessages, ...mergedTranslations }, null, 2)
-// );
