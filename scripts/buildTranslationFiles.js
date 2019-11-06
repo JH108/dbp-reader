@@ -26,8 +26,17 @@ const LANG_PATTERN = "../languages-test/locales/*.json";
  * - ReadFiles
  * - GetTranslations
  * - WriteFiles
+ *
+ * Example Output
+ * {
+ *   "app.components.BooksTable.header": "This is the BooksTable component !",
+ *   "app.components.ChapterButton.header": "This is the ChapterButton component !",
+ *   "app.components.HomePage.header": "This is HomePage component!",
+ *   "app.components.Logo.header": "This is the Logo component !",
+ * }
  */
-
+// TODO: Extract Regex declarations into properties on the TranslationGenerator class
+// TODO: Extract reuseable string manipulation into properties on the TranslationGenerator class
 class TranslationGenerator {
   // If the glob function needs to grow put it here
   async globFiles() {}
@@ -48,13 +57,28 @@ class TranslationGenerator {
     console.log("Files globbed", filenameData.length);
     // Might not be the best way to get all the messages, maybe a refactor to move
     // the message objects into JSON would be better
-    const parsedFiles = filenameData.map(data => {
-      const regex = new RegExp(/.*export default defineMessages\(\{(.*)\}/gm);
-      const strippedData = data.replace(/\n/gm, ";;");
-      console.log("data.match(regex)", strippedData.match(regex));
-      return data.match(regex);
+    const parsedFiles = filenameData.map((data, i) => {
+      const messageObjectRegex = new RegExp(
+        /export default defineMessages\(\{(.*)\}/gms
+      );
+      const matchedData = data.match(messageObjectRegex);
+      const normMatchedData =
+        matchedData && matchedData[0] ? matchedData[0] : "";
+      const parsedText = normMatchedData.replace(/\n\t/g, "");
+      const messagePairRegex = new RegExp(
+        /id: (['"]app\.[containers|components].*?['"],defaultMessage: (['"].*?['"]))/
+      );
+      const messagePairs = parsedText.match(messagePairRegex);
+      // const strippedData = data.replace(/\n/gm, ";;");
+      if (i === 0) {
+        console.log("matchedData", matchedData);
+        console.log("parsedText", parsedText);
+        console.log("messagePairs", messagePairs);
+        // console.log("strippedData.match(regex)", strippedData.match(regex));
+      }
+      return parsedText;
     });
-    console.log("parsedFiles", parsedFiles);
+
     return parsedFiles;
   }
 
@@ -68,7 +92,8 @@ const init = async () => {
   const messageFiles = await translationGenerator.readFiles(
     MESSAGE_FILES_PATTERN
   );
-  console.log("messageFiles", messageFiles);
+
+  await translationGenerator.getTranslations(messageFiles);
 };
 
 init().catch(error => {
