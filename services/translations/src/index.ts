@@ -11,9 +11,9 @@ const path = require("path");
 const readFile = promisify(fs.readFile);
 const globFile = promisify(glob);
 
-const MESSAGE_FILES_PATTERN = "../app/**/messages.js";
-const LANG_DIR = "../languages-test/locales/";
-const LANG_PATTERN = "../languages-test/locales/*.json";
+const MESSAGE_FILES_PATTERN = "../../../app/**/messages.js";
+const LANG_DIR = "../../../languages-test/locales/";
+const LANG_PATTERN = "../../../languages-test/locales/*.json";
 
 /** Structure
  * Steps
@@ -41,6 +41,19 @@ class TranslationGenerator {
   // If the glob function needs to grow put it here
   async globFiles() {}
 
+  public messageObjectRegex = new RegExp(
+    /export default defineMessages\(\{(.*)\}/gms
+  );
+
+  public messagePairRegex = new RegExp(
+    /id: (['"]app\.[containers|components].*?['"],\sdefaultMessage: (['"].*?['"]))/g
+  );
+  // public messagePairRegex = new RegExp(
+  //   /id: (['"]app\.[containers|components].*?['"],defaultMessage: (['"].*?['"]))/
+  // );
+
+  public removeNewlineAndTab = (data: string) => data.replace(/\n\t/g, "");
+
   async readFiles(searchPattern) {
     // Get filenames
     const filenames = await globFile(searchPattern);
@@ -55,26 +68,17 @@ class TranslationGenerator {
     // Resolve promises to get the concatenated text for all files
     const filenameData = await Promise.all(filenamePromises);
     console.log("Files globbed", filenameData.length);
-    // Might not be the best way to get all the messages, maybe a refactor to move
-    // the message objects into JSON would be better
-    const parsedFiles = filenameData.map((data, i) => {
-      const messageObjectRegex = new RegExp(
-        /export default defineMessages\(\{(.*)\}/gms
-      );
-      const matchedData = data.match(messageObjectRegex);
+
+    const parsedFiles = filenameData.map((data: string, i: number) => {
+      const matchedData = data.match(this.messageObjectRegex);
       const normMatchedData =
         matchedData && matchedData[0] ? matchedData[0] : "";
-      const parsedText = normMatchedData.replace(/\n\t/g, "");
-      const messagePairRegex = new RegExp(
-        /id: (['"]app\.[containers|components].*?['"],defaultMessage: (['"].*?['"]))/
-      );
-      const messagePairs = parsedText.match(messagePairRegex);
-      // const strippedData = data.replace(/\n/gm, ";;");
+      const parsedText = this.removeNewlineAndTab(normMatchedData);
+      const messagePairs = parsedText.match(this.messagePairRegex);
       if (i === 0) {
         console.log("matchedData", matchedData);
         console.log("parsedText", parsedText);
         console.log("messagePairs", messagePairs);
-        // console.log("strippedData.match(regex)", strippedData.match(regex));
       }
       return parsedText;
     });
@@ -82,7 +86,7 @@ class TranslationGenerator {
     return parsedFiles;
   }
 
-  async getTranslations() {}
+  async getTranslations(messagesToGet) {}
 
   async writeFile() {}
 }
