@@ -11,9 +11,9 @@ const path = require("path");
 const readFile = promisify(fs.readFile);
 const globFile = promisify(glob);
 
-const MESSAGE_FILES_PATTERN = "../../../app/**/messages.js";
-const LANG_DIR = "../../../languages-test/locales/";
-const LANG_PATTERN = "../../../languages-test/locales/*.json";
+const MESSAGE_FILES_PATTERN: string = "../../app/**/messages.js";
+const LANG_DIR: string = "../../languages-test/locales/";
+const LANG_PATTERN: string = "../../languages-test/locales/*.json";
 
 /** Structure
  * Steps
@@ -35,7 +35,6 @@ const LANG_PATTERN = "../../../languages-test/locales/*.json";
  *   "app.components.Logo.header": "This is the Logo component !",
  * }
  */
-// TODO: Extract Regex declarations into properties on the TranslationGenerator class
 // TODO: Extract reuseable string manipulation into properties on the TranslationGenerator class
 class TranslationGenerator {
   // If the glob function needs to grow put it here
@@ -45,21 +44,21 @@ class TranslationGenerator {
     /export default defineMessages\(\{(.*)\}/gms
   );
 
+  // Has issues around the [\s|^\}] part, the regex is being too greedy...
   public messagePairRegex = new RegExp(
-    /id: (['"]app\.[containers|components].*?['"],\sdefaultMessage: (['"].*?['"]))/g
+    /id: (['"]app\.[containers|components].*?['"],[\s|^\}]defaultMessage: (['"].*?['"]))/g
   );
-  // public messagePairRegex = new RegExp(
-  //   /id: (['"]app\.[containers|components].*?['"],defaultMessage: (['"].*?['"]))/
-  // );
 
   public removeNewlineAndTab = (data: string) => data.replace(/\n\t/g, "");
 
-  async readFiles(searchPattern) {
+  async readFiles(searchPattern: string) {
     // Get filenames
     const filenames = await globFile(searchPattern);
+    console.log("filenames", filenames);
+    console.log("searchPattern", searchPattern);
     // Map files to promises
-    const filenamePromises = filenames.map(async file => {
-      const filePath = path.join(__dirname, file);
+    const filenamePromises = filenames.map(async (file: string) => {
+      const filePath = path.join(file);
       const fileBuffer = await readFile(filePath);
       const fileData = Buffer.from(fileBuffer).toString("utf8");
 
@@ -69,14 +68,15 @@ class TranslationGenerator {
     const filenameData = await Promise.all(filenamePromises);
     console.log("Files globbed", filenameData.length);
 
-    const parsedFiles = filenameData.map((data: string, i: number) => {
+    const parsedFiles = filenameData.map((data: string) => {
       const matchedData = data.match(this.messageObjectRegex);
       const normMatchedData =
         matchedData && matchedData[0] ? matchedData[0] : "";
       const parsedText = this.removeNewlineAndTab(normMatchedData);
       const messagePairs = parsedText.match(this.messagePairRegex);
-      if (i === 0) {
-        console.log("matchedData", matchedData);
+      const messagePairsLength = messagePairs.length;
+      console.log("messagePairsLength", messagePairsLength);
+      if (messagePairsLength > 1) {
         console.log("parsedText", parsedText);
         console.log("messagePairs", messagePairs);
       }
@@ -86,7 +86,7 @@ class TranslationGenerator {
     return parsedFiles;
   }
 
-  async getTranslations(messagesToGet) {}
+  async getTranslations(messagesToGet: string[]) {}
 
   async writeFile() {}
 }
