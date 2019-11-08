@@ -43,10 +43,10 @@ class TranslationGenerator {
   public messageObjectRegex = new RegExp(
     /export default defineMessages\(\{(.*)\}/gms
   );
-
   // Has issues around the [\s|^\}] part, the regex is being too greedy...
+
   public messagePairRegex = new RegExp(
-    /id: (['"]app\.[containers|components].*?['"],[\s|^\}]defaultMessage: (['"].*?['"]))/g
+    /(id:\s*['"]app\.(components|containers).*?['"])(,\s*)(defaultMessage:\s*['"].*?['"])/g
   );
 
   public removeNewlineAndTab = (data: string) => data.replace(/\n\t/g, "");
@@ -77,7 +77,6 @@ class TranslationGenerator {
       const messagePairsLength = messagePairs.length;
       console.log("messagePairsLength", messagePairsLength);
       if (messagePairsLength > 1) {
-        console.log("parsedText", parsedText);
         console.log("messagePairs", messagePairs);
       }
       return parsedText;

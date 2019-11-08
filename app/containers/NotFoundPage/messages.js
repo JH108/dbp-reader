@@ -57,6 +57,6 @@ export default defineMessages({
 	weKnow: {
 		id: 'app.components.NotFoundPage.homePage',
 		defaultMessage:
-			"Just so you know, we have been notified that this page was not found, and if it's broken we will fix it.",
+			'Just so you know, we have been notified that this page was not found, and if it is broken we will fix it.',
 	},
 });
