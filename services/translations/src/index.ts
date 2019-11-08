@@ -46,7 +46,7 @@ class TranslationGenerator {
   // Has issues around the [\s|^\}] part, the regex is being too greedy...
 
   public messagePairRegex = new RegExp(
-    /(id:\s*['"]app\.(components|containers).*?['"])(,\s*)(defaultMessage:\s*['"].*?['"])/g
+    /(?<id>id:\s*['"]app\.(components|containers).*?['"])(,\s*)(?<defaultMessage>defaultMessage:\s*['"].*?['"])/g
   );
 
   public removeNewlineAndTab = (data: string) => data.replace(/\n\t/g, "");
@@ -76,8 +76,18 @@ class TranslationGenerator {
       const messagePairs = parsedText.match(this.messagePairRegex);
       const messagePairsLength = messagePairs.length;
       console.log("messagePairsLength", messagePairsLength);
-      if (messagePairsLength > 1) {
-        console.log("messagePairs", messagePairs);
+      if (messagePairs && messagePairs.length) {
+        messagePairs.forEach(pair => {
+          const groups = pair.groups;
+          console.log("START PAIR:");
+          console.log("groups && groups.id", groups && groups.id);
+          console.log(
+            "groups && groups.defaultMessage",
+            groups && groups.defaultMessage
+          );
+          console.log("END PAIR:");
+        });
+        // console.log("messagePairs", messagePairs);
       }
       return parsedText;
     });
@@ -95,6 +105,8 @@ const init = async () => {
   const messageFiles = await translationGenerator.readFiles(
     MESSAGE_FILES_PATTERN
   );
+
+  console.log("messageFiles", messageFiles && messageFiles.length);
 
   await translationGenerator.getTranslations(messageFiles);
 };
