@@ -35,7 +35,8 @@ const LANG_PATTERN: string = "../../languages-test/locales/*.json";
  *   "app.components.Logo.header": "This is the Logo component !",
  * }
  */
-// TODO: Extract reuseable string manipulation into properties on the TranslationGenerator class
+// TODO: Extract all default messages into json files and then update the js files to import them
+// Going the path of using regex is going to be too unstable and will require more effort
 class TranslationGenerator {
   // If the glob function needs to grow put it here
   async globFiles() {}
