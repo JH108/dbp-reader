@@ -5,8 +5,18 @@
 
 ## Steps
 
-- When the version is changed also fetch the `.ttf` file from the server either before the text or just after
-- Call `applyFontFamily` from `themes.js` with the path to the `.ttf` as its only parameter
+- Define the font in the `theme_config/font.json` file and on the `font` object in `themes.js` line 20.
+- When the version is changed also fetch the `.ttf` file from the server either before the text or just after. You can use [webfontloader](https://www.npmjs.com/package/webfontloader) to load your hosted font, example is below. Alternatively you can import the fonts like the other google fonts on line 19 of `variables.scss`; this would be simpler than using [webfontloader](https://www.npmjs.com/package/webfontloader), but would have some slight performance implications.
+
+  ```javascript
+  WebFont.load({
+  	google: {
+  		families: ['font-family-for-kurdish-behdini'],
+  	},
+  });
+  ```
+
+- Call `applyFontFamily` from `themes.js` with the key in the `fonts` map that will select the new font.
 - Change the `fontFamily` back to the cached version once the version changes, unless the next version also has a new font
 
 ## Development Needed
