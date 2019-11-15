@@ -9,6 +9,7 @@ const last = require("lodash/last");
 const path = require("path");
 
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 const globFile = promisify(glob);
 
 const MESSAGE_FILES_PATTERN: string = "../../app/**/messages.js";
@@ -55,50 +56,47 @@ class TranslationGenerator {
   async readFiles(searchPattern: string) {
     // Get filenames
     const filenames = await globFile(searchPattern);
-    console.log("filenames", filenames);
-    console.log("searchPattern", searchPattern);
     // Map files to promises
     const filenamePromises = filenames.map(async (file: string) => {
       const filePath = path.join(file);
       const fileBuffer = await readFile(filePath);
       const fileData = Buffer.from(fileBuffer).toString("utf8");
 
-      return fileData;
+      return [file, fileData];
     });
     // Resolve promises to get the concatenated text for all files
     const filenameData = await Promise.all(filenamePromises);
-    console.log("Files globbed", filenameData.length);
 
-    const parsedFiles = filenameData.map((data: string) => {
-      const matchedData = data.match(this.messageObjectRegex);
-      const normMatchedData =
-        matchedData && matchedData[0] ? matchedData[0] : "";
-      const parsedText = this.removeNewlineAndTab(normMatchedData);
-      const messagePairs = parsedText.match(this.messagePairRegex);
-      const messagePairsLength = messagePairs.length;
-      console.log("messagePairsLength", messagePairsLength);
-      if (messagePairs && messagePairs.length) {
-        messagePairs.forEach(pair => {
-          const groups = pair.groups;
-          console.log("START PAIR:");
-          console.log("groups && groups.id", groups && groups.id);
-          console.log(
-            "groups && groups.defaultMessage",
-            groups && groups.defaultMessage
-          );
-          console.log("END PAIR:");
-        });
-        // console.log("messagePairs", messagePairs);
+    const parsedFilePromises = filenameData.map(
+      async ([fileName, data]: string): Promise<string> => {
+        const matchedData = data.match(this.messageObjectRegex);
+        const normMatchedData =
+          matchedData && matchedData[0] ? matchedData[0] : "";
+        const parsedText = this.removeNewlineAndTab(normMatchedData);
+        const slicedText = parsedText.slice(30);
+        const messageJson = JSON.stringify(slicedText);
+        console.log("START TEXT FOR:");
+        await this.writeFile(fileName, messageJson);
+
+        console.log("END TEXT FOR:");
+
+        return fileName;
       }
-      return parsedText;
-    });
+    );
+    const parsedFiles = Promise.all(parsedFilePromises);
 
     return parsedFiles;
   }
 
   async getTranslations(messagesToGet: string[]) {}
 
-  async writeFile() {}
+  async writeFile(fileName: string, data: string) {
+    const normFileName = fileName.replace(/\.js$/, ".json");
+    console.log("normFileName", normFileName);
+    console.log("data", data);
+    const result = await writeFile(normFileName, data);
+    return result;
+  }
 }
 
 const init = async () => {

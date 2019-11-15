@@ -1,0 +1,1 @@
+"{header: {\tid: 'app.containers.Notes.header',\tdefaultMessage: 'This is Notes container !',},notesHeader: {\tid: 'app.containers.Notes.notesHeader',\tdefaultMessage: 'Notes',},highlightsHeader: {\tid: 'app.containers.Notes.highlightsHeader',\tdefaultMessage: 'Highlights',},bookmarksHeader: {\tid: 'app.containers.Notes.bookmarksHeader',\tdefaultMessage: 'Bookmarks',},\n}"
