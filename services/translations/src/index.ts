@@ -12,7 +12,7 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const globFile = promisify(glob);
 
-const MESSAGE_FILES_PATTERN: string = "../../app/**/messages.js";
+const MESSAGE_FILES_PATTERN: string = "../../app/**/messages.{mjs,js}";
 const LANG_DIR: string = "../../languages-test/locales/";
 const LANG_PATTERN: string = "../../languages-test/locales/*.json";
 
@@ -61,6 +61,9 @@ class TranslationGenerator {
       const filePath = path.join(file);
       const fileBuffer = await readFile(filePath);
       const fileData = Buffer.from(fileBuffer).toString("utf8");
+      console.log("\nFILE-PATH:", filePath, "\n");
+      const data = await import(filePath);
+      console.log("\nDATA:", data, "\n");
 
       return [file, fileData];
     });
@@ -75,10 +78,7 @@ class TranslationGenerator {
         const parsedText = this.removeNewlineAndTab(normMatchedData);
         const slicedText = parsedText.slice(30);
         const messageJson = JSON.stringify(slicedText);
-        console.log("START TEXT FOR:");
-        await this.writeFile(fileName, messageJson);
-
-        console.log("END TEXT FOR:");
+        await this.writeFile(fileName, messageJson, true);
 
         return fileName;
       }
@@ -90,10 +90,12 @@ class TranslationGenerator {
 
   async getTranslations(messagesToGet: string[]) {}
 
-  async writeFile(fileName: string, data: string) {
+  async writeFile(fileName: string, data: string, dryrun?: boolean) {
     const normFileName = fileName.replace(/\.js$/, ".json");
-    console.log("normFileName", normFileName);
-    console.log("data", data);
+    if (dryrun) {
+      // console.log("\nWrote:", normFileName, "\nData:\n", data, "\n");
+      return `Wrote: ${normFileName}...`;
+    }
     const result = await writeFile(normFileName, data);
     return result;
   }
