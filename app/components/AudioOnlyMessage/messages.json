@@ -1,1 +1,6 @@
-"{audioOnly: {\tid: 'app.components.AudioOnlyMessage.audioOnly',\tdefaultMessage: 'Audio Only',},\n}"
+{
+	"audioOnly": {
+		"id": "app.components.AudioOnlyMessage.audioOnly",
+		"defaultMessage": "Audio Only"
+	}
+}

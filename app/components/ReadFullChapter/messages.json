@@ -1,1 +1,6 @@
-"{readFullChapter: {\tid: 'app.components.ReadFullChapter.readFullChapter',\tdefaultMessage: 'Read Full Chapter',},\n}"
+{
+	"readFullChapter": {
+		"id": "app.components.ReadFullChapter.readFullChapter",
+		"defaultMessage": "Read Full Chapter"
+	}
+}

@@ -4,10 +4,6 @@
  * This contains all the text for the LanguageList component.
  */
 import { defineMessages } from 'react-intl';
+import messages from './messages.json';
 
-export default defineMessages({
-	header: {
-		id: 'app.components.LanguageList.header',
-		defaultMessage: 'This is the LanguageList component !',
-	},
-});
+export default defineMessages(messages);

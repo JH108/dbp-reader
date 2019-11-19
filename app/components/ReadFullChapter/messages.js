@@ -4,10 +4,6 @@
  * This contains all the text for the ReadFullChapter component.
  */
 import { defineMessages } from 'react-intl';
+import messages from './messages.json';
 
-export default defineMessages({
-	readFullChapter: {
-		id: 'app.components.ReadFullChapter.readFullChapter',
-		defaultMessage: 'Read Full Chapter',
-	},
-});
+export default defineMessages(messages);

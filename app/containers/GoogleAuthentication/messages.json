@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.containers.GoogleAuthentication.header',\tdefaultMessage: 'This is GoogleAuthentication container !',},\n}"
+{
+	"header": {
+		"id": "app.containers.GoogleAuthentication.header",
+		"defaultMessage": "This is GoogleAuthentication container !"
+	}
+}

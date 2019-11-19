@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.LanguageList.header',\tdefaultMessage: 'This is the LanguageList component !',},\n}"
+{
+	"header": {
+		"id": "app.components.LanguageList.header",
+		"defaultMessage": "This is the LanguageList component !"
+	}
+}

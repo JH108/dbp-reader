@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.PageSizeSelector.header',\tdefaultMessage: 'This is the PageSizeSelector component !',},\n}"
+{
+	"header": {
+		"id": "app.components.PageSizeSelector.header",
+		"defaultMessage": "This is the PageSizeSelector component !"
+	}
+}

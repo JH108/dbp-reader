@@ -4,10 +4,6 @@
  * This contains all the text for the SignUp component.
  */
 import { defineMessages } from 'react-intl';
+import messages from './messages.json';
 
-export default defineMessages({
-	header: {
-		id: 'app.components.SignUp.header',
-		defaultMessage: 'This is the SignUp component !',
-	},
-});
+export default defineMessages(messages);

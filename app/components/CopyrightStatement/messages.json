@@ -1,1 +1,14 @@
-"{providedByaudio: {\tid: 'app.components.CopyrightStatement.providedByAudio',\tdefaultMessage: 'This Bible audio is brought to you by:',},providedBytext: {\tid: 'app.components.CopyrightStatement.providedByText',\tdefaultMessage: 'This Bible text is brought to you by:',},providedByvideo: {\tid: 'app.components.CopyrightStatement.providedByVideo',\tdefaultMessage: 'This Bible video is brought to you by:',},\n}"
+{
+	"providedByaudio": {
+		"id": "app.components.CopyrightStatement.providedByAudio",
+		"defaultMessage": "This Bible audio is brought to you by:"
+	},
+	"providedBytext": {
+		"id": "app.components.CopyrightStatement.providedByText",
+		"defaultMessage": "This Bible text is brought to you by:"
+	},
+	"providedByvideo": {
+		"id": "app.components.CopyrightStatement.providedByVideo",
+		"defaultMessage": "This Bible video is brought to you by:"
+	}
+}

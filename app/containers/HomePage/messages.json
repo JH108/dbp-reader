@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.HomePage.header',\tdefaultMessage: 'This is HomePage component!',},\n}"
+{
+	"header": {
+		"id": "app.components.HomePage.header",
+		"defaultMessage": "This is HomePage component!"
+	}
+}

@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.containers.Profile.header',\tdefaultMessage: 'This is Profile container !',},\n}"
+{
+	"header": {
+		"id": "app.containers.Profile.header",
+		"defaultMessage": "This is Profile container !"
+	}
+}

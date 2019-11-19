@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.SignUp.header',\tdefaultMessage: 'This is the SignUp component !',},\n}"
+{
+	"header": {
+		"id": "app.components.SignUp.header",
+		"defaultMessage": "This is the SignUp component !"
+	}
+}

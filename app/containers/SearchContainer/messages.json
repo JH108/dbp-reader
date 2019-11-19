@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.containers.SearchContainer.header',\tdefaultMessage: 'This is SearchContainer container !',},\n}"
+{
+	"header": {
+		"id": "app.containers.SearchContainer.header",
+		"defaultMessage": "This is SearchContainer container !"
+	}
+}

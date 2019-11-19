@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.RecentSearches.header',\tdefaultMessage: 'This is the RecentSearches component !',},\n}"
+{
+	"header": {
+		"id": "app.components.RecentSearches.header",
+		"defaultMessage": "This is the RecentSearches component !"
+	}
+}

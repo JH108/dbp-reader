@@ -1,1 +1,18 @@
-"{please: {\tid: 'app.components.PleaseSignInMessage.please',\tdefaultMessage: 'Please',},signIn: {\tid: 'app.components.PleaseSignInMessage.signIn',\tdefaultMessage: 'sign in',},accessNotebook: {\tid: 'app.components.PleaseSignInMessage.accessNotebook',\tdefaultMessage: 'to access your notebook.',},toUseFeature: {\tid: 'app.components.PleaseSignInMessage.toUseFeature',\tdefaultMessage: 'to use this feature.',},\n}"
+{
+	"please": {
+		"id": "app.components.PleaseSignInMessage.please",
+		"defaultMessage": "Please"
+	},
+	"signIn": {
+		"id": "app.components.PleaseSignInMessage.signIn",
+		"defaultMessage": "sign in"
+	},
+	"accessNotebook": {
+		"id": "app.components.PleaseSignInMessage.accessNotebook",
+		"defaultMessage": "to access your notebook."
+	},
+	"toUseFeature": {
+		"id": "app.components.PleaseSignInMessage.toUseFeature",
+		"defaultMessage": "to use this feature."
+	}
+}

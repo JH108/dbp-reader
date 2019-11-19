@@ -1,1 +1,6 @@
-"{donate: {\tid: 'app.components.DonateButton.donate',\tdefaultMessage: 'Donate',},\n}"
+{
+	"donate": {
+		"id": "app.components.DonateButton.donate",
+		"defaultMessage": "Donate"
+	}
+}

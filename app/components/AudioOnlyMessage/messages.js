@@ -4,10 +4,6 @@
  * This contains all the text for the AudioOnlyMessage component.
  */
 import { defineMessages } from 'react-intl';
+import messages from './messages.json';
 
-export default defineMessages({
-	audioOnly: {
-		id: 'app.components.AudioOnlyMessage.audioOnly',
-		defaultMessage: 'Audio Only',
-	},
-});
+export default defineMessages(messages);

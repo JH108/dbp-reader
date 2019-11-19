@@ -1,1 +1,26 @@
-"{country: {\tid: 'app.containers.TextSelection.country',\tdefaultMessage: 'Country',},language: {\tid: 'app.containers.TextSelection.language',\tdefaultMessage: 'Language',},version: {\tid: 'app.containers.TextSelection.version',\tdefaultMessage: 'Version',},countryMessage: {\tid: 'app.containers.TextSelection.search',\tdefaultMessage: 'Search Country',},languageMessage: {\tid: 'app.containers.TextSelection.search',\tdefaultMessage: 'Search Language',},versionMessage: {\tid: 'app.containers.TextSelection.search',\tdefaultMessage: 'Search Version',},\n}"
+{
+	"country": {
+		"id": "app.containers.TextSelection.country",
+		"defaultMessage": "Country"
+	},
+	"language": {
+		"id": "app.containers.TextSelection.language",
+		"defaultMessage": "Language"
+	},
+	"version": {
+		"id": "app.containers.TextSelection.version",
+		"defaultMessage": "Version"
+	},
+	"countryMessage": {
+		"id": "app.containers.TextSelection.search",
+		"defaultMessage": "Search Country"
+	},
+	"languageMessage": {
+		"id": "app.containers.TextSelection.search",
+		"defaultMessage": "Search Language"
+	},
+	"versionMessage": {
+		"id": "app.containers.TextSelection.search",
+		"defaultMessage": "Search Version"
+	}
+}

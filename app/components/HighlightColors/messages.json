@@ -1,1 +1,26 @@
-"{none: {\tid: 'app.components.HighlightColors.none',\tdefaultMessage: 'None',},yellow: {\tid: 'app.components.HighlightColors.yellow',\tdefaultMessage: 'Yellow',},green: {\tid: 'app.components.HighlightColors.green',\tdefaultMessage: 'Green',},pink: {\tid: 'app.components.HighlightColors.pink',\tdefaultMessage: 'Pink',},purple: {\tid: 'app.components.HighlightColors.purple',\tdefaultMessage: 'Purple',},blue: {\tid: 'app.components.HighlightColors.blue',\tdefaultMessage: 'Blue',},\n}"
+{
+	"none": {
+		"id": "app.components.HighlightColors.none",
+		"defaultMessage": "None"
+	},
+	"yellow": {
+		"id": "app.components.HighlightColors.yellow",
+		"defaultMessage": "Yellow"
+	},
+	"green": {
+		"id": "app.components.HighlightColors.green",
+		"defaultMessage": "Green"
+	},
+	"pink": {
+		"id": "app.components.HighlightColors.pink",
+		"defaultMessage": "Pink"
+	},
+	"purple": {
+		"id": "app.components.HighlightColors.purple",
+		"defaultMessage": "Purple"
+	},
+	"blue": {
+		"id": "app.components.HighlightColors.blue",
+		"defaultMessage": "Blue"
+	}
+}

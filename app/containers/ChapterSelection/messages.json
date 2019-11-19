@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.containers.ChapterSelection.header',\tdefaultMessage: 'This is ChapterSelection container !',},\n}"
+{
+	"header": {
+		"id": "app.containers.ChapterSelection.header",
+		"defaultMessage": "This is ChapterSelection container !"
+	}
+}

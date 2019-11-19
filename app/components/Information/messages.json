@@ -1,1 +1,50 @@
-"{header: {\tid: 'app.components.Information.header',\tdefaultMessage: 'This is the Information component !',},providedByAudio: {\tid: 'app.components.Information.providedByAudio',\tdefaultMessage: 'This Bible audio is brought to you by:',},providedByText: {\tid: 'app.components.Information.providedByText',\tdefaultMessage: 'This Bible text is brought to you by:',},material: {\tid: 'app.components.Information.material',\tdefaultMessage: 'Copyrighted Material',},learnMore: {\tid: 'app.components.Information.learnMore',\tdefaultMessage: 'Learn More',},ministrySlogan: {\tid: 'app.components.Information.ministrySlogan',\tdefaultMessage: ', a ministry of',},circleC: {\tid: 'app.components.Information.circleC',\tdefaultMessage: '©',},bibleIsText: {\tid: 'app.components.Information.bibleIsText',\tdefaultMessage: 'Bible.is',},faithComesByHearing: {\tid: 'app.components.Information.faithComesByHearing',\tdefaultMessage: 'Faith Comes By Hearing',},circleR: {\tid: 'app.components.Information.circleR',\tdefaultMessage: '®.',},terms: {\tid: 'app.components.Information.terms',\tdefaultMessage: 'Terms and Conditions',},helpSupport: {\tid: 'app.components.Information.helpSupport',\tdefaultMessage: 'Help & Support',},\n}"
+{
+	"header": {
+		"id": "app.components.Information.header",
+		"defaultMessage": "This is the Information component !"
+	},
+	"providedByAudio": {
+		"id": "app.components.Information.providedByAudio",
+		"defaultMessage": "This Bible audio is brought to you by:"
+	},
+	"providedByText": {
+		"id": "app.components.Information.providedByText",
+		"defaultMessage": "This Bible text is brought to you by:"
+	},
+	"material": {
+		"id": "app.components.Information.material",
+		"defaultMessage": "Copyrighted Material"
+	},
+	"learnMore": {
+		"id": "app.components.Information.learnMore",
+		"defaultMessage": "Learn More"
+	},
+	"ministrySlogan": {
+		"id": "app.components.Information.ministrySlogan",
+		"defaultMessage": ", a ministry of"
+	},
+	"circleC": {
+		"id": "app.components.Information.circleC",
+		"defaultMessage": "©"
+	},
+	"bibleIsText": {
+		"id": "app.components.Information.bibleIsText",
+		"defaultMessage": "Bible.is"
+	},
+	"faithComesByHearing": {
+		"id": "app.components.Information.faithComesByHearing",
+		"defaultMessage": "Faith Comes By Hearing"
+	},
+	"circleR": {
+		"id": "app.components.Information.circleR",
+		"defaultMessage": "®."
+	},
+	"terms": {
+		"id": "app.components.Information.terms",
+		"defaultMessage": "Terms and Conditions"
+	},
+	"helpSupport": {
+		"id": "app.components.Information.helpSupport",
+		"defaultMessage": "Help & Support"
+	}
+}

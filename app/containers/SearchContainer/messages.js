@@ -4,10 +4,6 @@
  * This contains all the text for the SearchContainer component.
  */
 import { defineMessages } from 'react-intl';
+import messages from './messages.json';
 
-export default defineMessages({
-	header: {
-		id: 'app.containers.SearchContainer.header',
-		defaultMessage: 'This is SearchContainer container !',
-	},
-});
+export default defineMessages(messages);

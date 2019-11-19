@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.containers.Settings.header',\tdefaultMessage: 'This is Settings container !',},\n}"
+{
+	"header": {
+		"id": "app.containers.Settings.header",
+		"defaultMessage": "This is Settings container !"
+	}
+}

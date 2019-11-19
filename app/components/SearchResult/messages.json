@@ -1,1 +1,6 @@
-"{header: {\tid: 'app.components.SearchResult.header',\tdefaultMessage: 'This is the SearchResult component !',},\n}"
+{
+	"header": {
+		"id": "app.components.SearchResult.header",
+		"defaultMessage": "This is the SearchResult component !"
+	}
+}
