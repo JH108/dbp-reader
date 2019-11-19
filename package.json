@@ -2,7 +2,6 @@
 	"name": "dbp-reader",
 	"version": "3.5.0",
 	"description": "Bible is website",
-	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://dbsdevs@bitbucket.org/dbsdevs/dbp_4_reader.git"
