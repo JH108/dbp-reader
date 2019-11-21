@@ -6,6 +6,7 @@ const glob = require("glob");
 const promisify = require("util").promisify;
 const mkdirpSync = require("mkdirp").sync;
 const last = require("lodash/last");
+const merge = require("lodash/merge");
 const path = require("path");
 
 const readFile = promisify(fs.readFile);
@@ -50,9 +51,31 @@ class TranslationGenerator {
   private messagePairRegex = new RegExp(
     /(?<id>id:\s*['"]app\.(components|containers).*?['"])(,\s*)(?<defaultMessage>defaultMessage:\s*['"].*?['"])/g
   );
+  private matchJsonFilePaths = (filePath: string) => filePath.match(/\.json$/);
 
-  private handleReturnedJSON(data: {}) {
+  private async handleReturnedJSON(fileName: string, data: string) {
+    // Need a helper method to resolve the files that are strings and one to resolve the JSON objects
+    const matchedData = data.match(this.messageObjectRegex);
+    const normMatchedData = matchedData && matchedData[0] ? matchedData[0] : "";
+    const parsedText = this.removeNewlineAndTab(normMatchedData);
+    const slicedText = parsedText.slice(30);
+    const messageJson = JSON.stringify(slicedText);
+    // Do something else here like check to see if the json file already exists
+    await this.writeFile(fileName, messageJson, true);
+
+    return messageJson;
+  }
+
+  private async handleReturnedData(fileName: string, data: {}) {
     // update the local messages object with the new messages retrieved from the JSON files
+    // overwrites the existing key on this.messages
+    const updatedKeys = {};
+    const dataEntries = Object.entries(data);
+    dataEntries.forEach(([key, value]) => {});
+    // Need to get the file path and add it to these as keys
+    // Example: app.components.AccountSettings.header instead of just header
+    merge(this.messages, data);
+    console.log("KEYS OF NEW DATA:", Object.keys(data));
     return this.messages;
   }
 
@@ -70,23 +93,19 @@ class TranslationGenerator {
     // Map files to promises
     const filenamePromises = filenames.map(async (file: string) => {
       const filePath = path.join(file);
-      let fileData = "";
-      console.log("filePath.match(/$.json/)", filePath.match(/$\.json/));
-      console.log("filePath.match(/.json$/)", filePath.match(/\.json$/));
+      const fileBuffer = await readFile(filePath);
+      const fileData = Buffer.from(fileBuffer).toString("utf8");
+      let jsonData = fileData;
 
-      if (filePath.match(/$\.json/)) {
-        // JSON can be imported
-        const json = require(filePath);
-        fileData = JSON.parse(json);
-      } else {
-        // Everything else needs to be read and parsed
-        const fileBuffer = await readFile(filePath);
-        fileData = Buffer.from(fileBuffer).toString("utf8");
+      if (this.matchJsonFilePaths(filePath)) {
+        // Data is JSON and can be parsed
+        console.log("filePath", filePath);
+        jsonData = JSON.parse(fileData);
       }
       console.log("\nFILE-PATH:", filePath, "\n");
-      console.log("\nDATA:", fileData, "\n");
+      console.log("\nDATA:", typeof jsonData, "\n");
 
-      return [file, fileData];
+      return [file, jsonData];
     });
     // Resolve promises to get the concatenated text for all files
     const filenameData = await Promise.all(filenamePromises);
@@ -94,17 +113,9 @@ class TranslationGenerator {
     const parsedFilePromises = filenameData.map(
       async ([fileName, data]: string): Promise<string> => {
         if (typeof data !== "string") {
-          this.handleReturnedJSON(data);
+          await this.handleReturnedData(fileName, data);
         } else {
-          // Need a helper method to resolve the files that are strings and one to resolve the JSON objects
-          const matchedData = data.match(this.messageObjectRegex);
-          const normMatchedData =
-            matchedData && matchedData[0] ? matchedData[0] : "";
-          const parsedText = this.removeNewlineAndTab(normMatchedData);
-          const slicedText = parsedText.slice(30);
-          const messageJson = JSON.stringify(slicedText);
-          // Do something else here like check to see if the json file already exists
-          await this.writeFile(fileName, messageJson, true);
+          await this.handleReturnedJSON(fileName, data);
         }
         return fileName;
       }
