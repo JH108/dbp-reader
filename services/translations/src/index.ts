@@ -69,14 +69,19 @@ class TranslationGenerator {
   private async handleReturnedData(fileName: string, data: {}) {
     // update the local messages object with the new messages retrieved from the JSON files
     // overwrites the existing key on this.messages
-    const updatedKeys = {};
+    const updatedKeys: { [pathName: string]: string } = {};
     const dataEntries = Object.entries(data);
-    dataEntries.forEach(([key, value]) => {});
+    dataEntries.forEach(
+      ([key, value]: [string, { id: string; defaultMessage: string }]) => {
+        updatedKeys[value.id] = value.defaultMessage;
+      }
+    );
     // Need to get the file path and add it to these as keys
     // Example: app.components.AccountSettings.header instead of just header
-    merge(this.messages, data);
-    console.log("KEYS OF NEW DATA:", Object.keys(data));
-    return this.messages;
+    this.messages = merge(this.messages, updatedKeys);
+
+    // return this.messages;
+    return fileName;
   }
 
   public removeNewlineAndTab = (data: string) => data.replace(/\n\t/g, "");
@@ -99,11 +104,11 @@ class TranslationGenerator {
 
       if (this.matchJsonFilePaths(filePath)) {
         // Data is JSON and can be parsed
-        console.log("filePath", filePath);
+        // console.log("filePath", filePath);
         jsonData = JSON.parse(fileData);
       }
-      console.log("\nFILE-PATH:", filePath, "\n");
-      console.log("\nDATA:", typeof jsonData, "\n");
+      // console.log("\nFILE-PATH:", filePath, "\n");
+      // console.log("\nDATA:", typeof jsonData, "\n");
 
       return [file, jsonData];
     });
@@ -111,18 +116,18 @@ class TranslationGenerator {
     const filenameData = await Promise.all(filenamePromises);
 
     const parsedFilePromises = filenameData.map(
-      async ([fileName, data]: string): Promise<string> => {
+      ([fileName, data]: string): Promise<string> => {
         if (typeof data !== "string") {
-          await this.handleReturnedData(fileName, data);
+          return this.handleReturnedData(fileName, data);
         } else {
-          await this.handleReturnedJSON(fileName, data);
+          return this.handleReturnedJSON(fileName, data);
         }
-        return fileName;
       }
     );
     const parsedFiles = Promise.all(parsedFilePromises);
+    console.log("Parsed Files: ", parsedFiles);
 
-    return parsedFiles;
+    return this.messages;
   }
 
   async getTranslations(messagesToGet: string[]) {}
@@ -144,9 +149,9 @@ const init = async (messagePattern?: string) => {
   const translationGenerator = new TranslationGenerator();
   const messageFiles = await translationGenerator.readFiles(messagePattern);
 
-  console.log("messageFiles", messageFiles && messageFiles.length);
+  console.log("messageFiles", messageFiles);
 
-  await translationGenerator.getTranslations(messageFiles);
+  // await translationGenerator.getTranslations(messageFiles);
 };
 
 init().catch(error => {
