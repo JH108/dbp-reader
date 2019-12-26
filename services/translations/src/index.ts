@@ -17,8 +17,9 @@ const globFile = promisify(glob);
  * Steps
  * 1. Gather all messages from application
  * 2. Create files for each desired translation
- * 3. Pull translation messages from remote location (api or google sheets)
- * 4. Write new message files containing updated translations
+ * 3. Determine which translation to update
+ * 4. Pull translation messages from remote location (api or google sheets)
+ * 5. Write new message files containing updated translations
  *
  * Modules
  * - ReadFiles
@@ -64,10 +65,8 @@ class TranslationGenerator {
       }
     );
     // Need to get the file path and add it to these as keys
-    // Example: app.components.AccountSettings.header instead of just header
     this.messages = merge(this.messages, updatedKeys);
 
-    // return this.messages;
     return fileName;
   }
 
@@ -90,12 +89,8 @@ class TranslationGenerator {
       let jsonData = fileData;
 
       if (this.matchJsonFilePaths(filePath)) {
-        // Data is JSON and can be parsed
-        // console.log("filePath", filePath);
         jsonData = JSON.parse(fileData);
       }
-      // console.log("\nFILE-PATH:", filePath, "\n");
-      // console.log("\nDATA:", typeof jsonData, "\n");
 
       return [file, jsonData];
     });
@@ -108,12 +103,16 @@ class TranslationGenerator {
       }
     );
     const parsedFiles = Promise.all(parsedFilePromises);
-    console.log("Parsed Files: ", parsedFiles);
+
+    return parsedFiles;
+  }
+
+  // All messages used in the app
+  async gatherMessages(messagePattern?: string) {
+    await this.readFiles(messagePattern);
 
     return this.messages;
   }
-
-  async gatherMessages() {}
 
   async getTranslations(messagesToGet: string[]) {}
 
@@ -137,11 +136,9 @@ class TranslationGenerator {
 
 const init = async (messagePattern?: string) => {
   const translationGenerator = new TranslationGenerator();
-  const messageFiles = await translationGenerator.readFiles(messagePattern);
   const messages = await translationGenerator.gatherMessages();
 
   console.log("messages", messages);
-  console.log("messageFiles", messageFiles);
 
   // await translationGenerator.getTranslations(messageFiles);
 };
