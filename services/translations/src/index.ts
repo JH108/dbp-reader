@@ -53,19 +53,6 @@ class TranslationGenerator {
   );
   private matchJsonFilePaths = (filePath: string) => filePath.match(/\.json$/);
 
-  private async handleReturnedJSON(fileName: string, data: string) {
-    // Need a helper method to resolve the files that are strings and one to resolve the JSON objects
-    const matchedData = data.match(this.messageObjectRegex);
-    const normMatchedData = matchedData && matchedData[0] ? matchedData[0] : "";
-    const parsedText = this.removeNewlineAndTab(normMatchedData);
-    const slicedText = parsedText.slice(30);
-    const messageJson = JSON.stringify(slicedText);
-    // Do something else here like check to see if the json file already exists
-    await this.writeFile(fileName, messageJson, true);
-
-    return messageJson;
-  }
-
   private async handleReturnedData(fileName: string, data: {}) {
     // update the local messages object with the new messages retrieved from the JSON files
     // overwrites the existing key on this.messages
@@ -117,11 +104,7 @@ class TranslationGenerator {
 
     const parsedFilePromises = filenameData.map(
       ([fileName, data]: string): Promise<string> => {
-        if (typeof data !== "string") {
-          return this.handleReturnedData(fileName, data);
-        } else {
-          return this.handleReturnedJSON(fileName, data);
-        }
+        return this.handleReturnedData(fileName, data);
       }
     );
     const parsedFiles = Promise.all(parsedFilePromises);
@@ -130,10 +113,17 @@ class TranslationGenerator {
     return this.messages;
   }
 
+  async gatherMessages() {}
+
   async getTranslations(messagesToGet: string[]) {}
 
   async writeFile(fileName: string, data: string, dryrun?: boolean) {
-    const normFileName = fileName.replace(/\.js$/, ".json");
+    const normFileName = path.join(
+      __dirname,
+      "temp-files",
+      fileName.replace(/\.js$/, ".json")
+    ); // New file place
+    console.log("NORM FILE:", normFileName);
 
     if (dryrun) {
       return `Wrote: ${normFileName}...`;
@@ -148,7 +138,9 @@ class TranslationGenerator {
 const init = async (messagePattern?: string) => {
   const translationGenerator = new TranslationGenerator();
   const messageFiles = await translationGenerator.readFiles(messagePattern);
+  const messages = await translationGenerator.gatherMessages();
 
+  console.log("messages", messages);
   console.log("messageFiles", messageFiles);
 
   // await translationGenerator.getTranslations(messageFiles);
