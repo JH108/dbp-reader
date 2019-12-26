@@ -114,7 +114,20 @@ class TranslationGenerator {
     return this.messages;
   }
 
-  async getTranslations(messagesToGet: string[]) {}
+  async getTranslations(
+    translationsToGet: string[],
+    messages: { [propName: string]: string }
+  ) {
+    console.log("TRANSLATIONS:", translationsToGet);
+    // Create a temp file for each with the given messages
+    // Fetch external messages and replace current local messages
+    // Read the current local messages and overwrite the given messages
+    for (let i = 0; i < translationsToGet.length; i++) {
+      const translation = translationsToGet[i];
+      const fileName = path.join(__dirname, `${translation}.json`);
+      await this.writeFile(fileName, JSON.stringify(messages), true);
+    }
+  }
 
   async writeFile(fileName: string, data: string, dryrun?: boolean) {
     const normFileName = path.join(
@@ -134,16 +147,14 @@ class TranslationGenerator {
   }
 }
 
-const init = async (messagePattern?: string) => {
+const init = async (translations: string[], messagePattern?: string) => {
   const translationGenerator = new TranslationGenerator();
   const messages = await translationGenerator.gatherMessages();
 
-  console.log("messages", messages);
-
-  // await translationGenerator.getTranslations(messageFiles);
+  await translationGenerator.getTranslations(translations, messages);
 };
 
-init().catch(error => {
+init(["en", "ru", "ar", "es", "th"]).catch(error => {
   console.log("Error in init function", error);
 });
 
