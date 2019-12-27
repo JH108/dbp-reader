@@ -125,23 +125,24 @@ class TranslationGenerator {
     for (let i = 0; i < translationsToGet.length; i++) {
       const translation = translationsToGet[i];
       const fileName = path.join(__dirname, `${translation}.json`);
-      await this.writeFile(fileName, JSON.stringify(messages), true);
+      await this.writeFile(fileName, JSON.stringify(messages), false); // Create the new temp files
     }
   }
 
   async writeFile(fileName: string, data: string, dryrun?: boolean) {
-    const normFileName = path.join(
+    const normFileName = fileName.match(/([a-zA-Z]{2,3}\.json$)/);
+    const filePath = path.join(
       __dirname,
+      "..",
       "temp-files",
-      fileName.replace(/\.js$/, ".json")
-    ); // New file place
-    console.log("NORM FILE:", normFileName);
+      normFileName ? normFileName[0] : ""
+    );
 
     if (dryrun) {
-      return `Wrote: ${normFileName}...`;
+      return `Wrote: ${filePath}...`;
     }
 
-    const result = await writeFile(normFileName, data);
+    const result = await writeFile(filePath, data);
 
     return result;
   }
