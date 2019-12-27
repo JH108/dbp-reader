@@ -138,6 +138,7 @@ class TranslationGenerator {
       normFileName ? normFileName[0] : ""
     );
 
+    // Need to make sure the folder exists
     if (dryrun) {
       return `Wrote: ${filePath}...`;
     }
