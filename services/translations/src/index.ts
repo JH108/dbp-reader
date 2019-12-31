@@ -118,14 +118,17 @@ class TranslationGenerator {
     translationsToGet: string[],
     messages: { [propName: string]: string }
   ) {
-    console.log("TRANSLATIONS:", translationsToGet);
+    // TODO: Use fs-stat to check for the folders existence and create if necessary
     // Create a temp file for each with the given messages
-    // Fetch external messages and replace current local messages
-    // Read the current local messages and overwrite the given messages
     for (let i = 0; i < translationsToGet.length; i++) {
       const translation = translationsToGet[i];
       const fileName = path.join(__dirname, `${translation}.json`);
       await this.writeFile(fileName, JSON.stringify(messages), false); // Create the new temp files
+      // Fetch external messages based on the current translation and replace current local messages
+      const newMessages = await Promise.resolve({});
+      // Read the current local messages and overwrite the given messages
+      const combinedMessages = merge(newMessages, messages);
+      await this.writeFile(fileName, JSON.stringify(combinedMessages), false);
     }
   }
 
@@ -150,12 +153,15 @@ class TranslationGenerator {
 }
 
 const init = async (translations: string[], messagePattern?: string) => {
+  console.log("INIT: fetching the following translations...", translations);
   const translationGenerator = new TranslationGenerator();
   const messages = await translationGenerator.gatherMessages();
 
   await translationGenerator.getTranslations(translations, messages);
 };
 
+// Edit the list below to change which translations are fetched
+// TODO: Turn this into a CLI for easy updates to the languages
 init(["en", "ru", "ar", "es", "th"]).catch(error => {
   console.log("Error in init function", error);
 });
