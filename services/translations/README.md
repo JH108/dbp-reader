@@ -1,5 +1,11 @@
 # Translations Module for the DBP-Reader
 
+## Important Links
+
+The URL where the translations are currently stored. The first approach will have all translations hosted in a Google Sheet, future development could include using an API to access translation files from a database.
+
+- [Base Url](https://docs.google.com/spreadsheets/d/1KjetxTRxmwStF54tM76CfkFEV042_MSstfF8_fzRBX8/edit#gid=1495712534)
+
 ## Goals
 
 1. Increase the speed of adding new translations.
