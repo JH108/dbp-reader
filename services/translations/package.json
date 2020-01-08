@@ -27,6 +27,7 @@
 	"homepage": "https://github.com/digitalbiblesociety/dbp-reader#readme",
 	"dependencies": {
 		"@types/node": "^12.12.8",
+		"isomorphic-fetch": "^2.2.1",
 		"lodash": "^4.17.15",
 		"typescript": "^3.6.3"
 	}

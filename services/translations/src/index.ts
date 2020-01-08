@@ -12,6 +12,7 @@ const path = require("path");
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const globFile = promisify(glob);
+const fetchTranslationData = require("./googleApis").default;
 
 /** Structure
  * Steps
@@ -122,13 +123,17 @@ class TranslationGenerator {
     // Create a temp file for each with the given messages
     for (let i = 0; i < translationsToGet.length; i++) {
       const translation = translationsToGet[i];
+      console.log("translation", translation);
       const fileName = path.join(__dirname, `${translation}.json`);
       await this.writeFile(fileName, JSON.stringify(messages), false); // Create the new temp files
       // Fetch external messages based on the current translation and replace current local messages
-      const newMessages = await Promise.resolve({});
+      const newMessages = await fetchTranslationData(translation); // Might want this to be a map of sheet id to iso3
+      console.log("fileName", fileName);
+      console.log("newMessages", newMessages);
+
       // Read the current local messages and overwrite the given messages
-      const combinedMessages = merge(newMessages, messages);
-      await this.writeFile(fileName, JSON.stringify(combinedMessages), false);
+      // const combinedMessages = merge(newMessages, messages);
+      // await this.writeFile(fileName, JSON.stringify(combinedMessages), false);
     }
   }
 
