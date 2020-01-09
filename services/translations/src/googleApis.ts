@@ -9,6 +9,8 @@ const iso3ToSheetIdMap: any = {
   ar: 1495712534
 };
 
+// TODO: Extract this into a general "get something from google sheets module"
+// FIXME: Seems to break if a function is used on the google sheet
 const getTranslationSheetData = async (iso3: string) => {
   const sheetId = iso3ToSheetIdMap[iso3];
   if (!sheetId && sheetId !== 0) {
@@ -22,22 +24,21 @@ const getTranslationSheetData = async (iso3: string) => {
   console.log("body", body);
 
   const bodyArray = body.split(/\n/i);
+  // All the titles are in the first row of data and the values follow
   const valuesArray = bodyArray.slice(1);
   const titlesArray = bodyArray
     .slice(0, 1)
     .map((titles: any) => titles.replace("\r", "").split("\t"))
     .reduce((a: any, c: any) => [...a, c]);
 
+  console.log("titles", titlesArray);
+
   const lineEntries = valuesArray
     .map((item: any) => item.replace("\r", "").split("\t"))
-    .map((entry: any) => ({
-      [titlesArray[0]]: entry[0],
-      [titlesArray[1]]: entry[1],
-      [titlesArray[2]]: entry[2],
-      [titlesArray[3]]: entry[3],
-      [titlesArray[4]]: entry[4].toLowerCase(),
-      [titlesArray[5]]: entry[5]
-    }));
+    .map((entry: any) => {
+      console.log("entry", entry);
+      return entry;
+    });
   console.log("lineEntries", lineEntries);
 
   // @ts-ignore
@@ -55,8 +56,6 @@ const getTranslationSheetData = async (iso3: string) => {
       {}
     )
   ).reduce((a: any, c) => [...a, c], []);
-
-  console.log("sections", sections);
 
   lineEntries
     .map((e: any) => ({

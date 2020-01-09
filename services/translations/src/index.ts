@@ -161,6 +161,7 @@ const init = async (translations: string[], messagePattern?: string) => {
   console.log("INIT: fetching the following translations...", translations);
   const translationGenerator = new TranslationGenerator();
   const messages = await translationGenerator.gatherMessages();
+  // console.log(messages);
 
   await translationGenerator.getTranslations(translations, messages);
 };
