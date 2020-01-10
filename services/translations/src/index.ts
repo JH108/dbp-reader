@@ -127,13 +127,14 @@ class TranslationGenerator {
       const fileName = path.join(__dirname, `${translation}.json`);
       await this.writeFile(fileName, JSON.stringify(messages), false); // Create the new temp files
       // Fetch external messages based on the current translation and replace current local messages
-      const newMessages = await fetchTranslationData(translation); // Might want this to be a map of sheet id to iso3
-      console.log("fileName", fileName);
-      console.log("newMessages", newMessages);
+      const newMessages: {
+        [propName: string]: string;
+      } = await fetchTranslationData(translation); // Might want this to be a map of sheet id to iso3
 
-      // Read the current local messages and overwrite the given messages
-      // const combinedMessages = merge(newMessages, messages);
-      // await this.writeFile(fileName, JSON.stringify(combinedMessages), false);
+      // Read the current local messages and overwrite with the new messages
+      const combinedMessages = merge(messages, newMessages);
+      await this.writeFile(fileName, JSON.stringify(combinedMessages), false);
+      // TODO: Add js-beautify to format the json files after they are updated
     }
   }
 
@@ -161,7 +162,6 @@ const init = async (translations: string[], messagePattern?: string) => {
   console.log("INIT: fetching the following translations...", translations);
   const translationGenerator = new TranslationGenerator();
   const messages = await translationGenerator.gatherMessages();
-  // console.log(messages);
 
   await translationGenerator.getTranslations(translations, messages);
 };

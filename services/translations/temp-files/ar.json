@@ -1,7 +1,7 @@
 {
-	"app.components.AccountSettings.logout": "Logout",
-	"app.components.AudioOnlyMessage.audioOnly": "Audio Only",
-	"app.components.CopyrightStatement.providedByAudio": "This Bible audio is brought to you by:",
+	"app.components.AccountSettings.logout": "Testing",
+	"app.components.AudioOnlyMessage.audioOnly": "Testing2",
+	"app.components.CopyrightStatement.providedByAudio": "Testing3",
 	"app.components.CopyrightStatement.providedByText": "This Bible text is brought to you by:",
 	"app.components.CopyrightStatement.providedByVideo": "This Bible video is brought to you by:",
 	"app.components.DonateButton.donate": "Donate",
